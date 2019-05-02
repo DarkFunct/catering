@@ -1,0 +1,57 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<script src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
+<style>
+@charset "UTF-8";
+
+[v-cloak] {
+	display: none;
+}
+</style>
+</head>
+<body>
+	<div id="header" v-cloak>
+		<nav class="navbar navbar-expand-sm bg-info navbar-dark" style="justify-content: space-between;">
+			<ul class="navbar-nav">
+				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/dining-table'}" v-on:click="navTo('/admin/dining-table')"><a class="nav-link">餐桌管理</a></li>
+				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/style-of-cooking'}" v-on:click="navTo('/admin/style-of-cooking')"><a class="nav-link">菜系管理</a></li>
+				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/cooking'}" v-on:click="navTo('/admin/cooking')"><a class="nav-link">菜品维护</a></li>
+				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/place-order-record'}" v-on:click="navTo('/admin/place-order-record')"><a class="nav-link">下单记录</a></li>
+			</ul>
+			<form class="form-inline" style="float: right;">
+				<span style="padding-right: 20px;">餐饮管理</span>
+			</form>
+		</nav>
+
+	</div>
+	<script type="text/javascript">
+		Vue.http.interceptors.push(function(request) {
+			return function(response) {
+				if (response.body.code != 200) {
+					response.ok = false;
+					layer.alert(response.body.msg, {
+						title : '提示',
+						icon : 7,
+						time : 3000
+					});
+				}
+			};
+		});
+		var header = new Vue({
+			el : '#header',
+			data : {
+				currentPathName : ''
+			},
+			computed : {},
+			created : function() {
+				this.currentPathName = window.location.pathname;
+			},
+			methods : {
+				navTo : function(url) {
+					window.location.href = url;
+				}
+			}
+		});
+	</script>
+</body>
+</html>

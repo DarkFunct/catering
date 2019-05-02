@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>点菜</title>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="/js/common/common.js"></script>
+<style type="text/css">
+.dining-table {
+	padding: 10px;
+}
+
+.dining-table-body {
+	border: 1px solid #b7a9a9;
+	text-align: center;
+	border-radius: 200px;
+	height: 245px;
+	line-height: 245px;
+	background: #988181;
+	font-weight: bold;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+	<div id="hall" class="container" style="padding-top: 4%;" v-cloak>
+		<div class="card">
+			<div class="card-body" style="background: #ecebeb; height: 500px;">
+				<div class="row" style="overflow: auto; height: 88%;">
+					<div class="col-sm-3 dining-table" v-for="freeDiningTable in freeDiningTables">
+						<div class="dining-table-body">
+							<div v-on:click="toOrderDishesPage(freeDiningTable.id)">{{freeDiningTable.diningTableName}}({{freeDiningTable.stateName}})</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/js/front/hall.js"></script>
+</body>
+</html>

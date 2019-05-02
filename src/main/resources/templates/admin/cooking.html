@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>菜品管理</title>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-fileinput/5.0.1/css/fileinput.min.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script>
+<link href="/css/common/common.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.kv-file-content {
+	width: 100% !important;
+}
+</style>
+</head>
+
+<body>
+	<div th:replace="admin/common/header::html"></div>
+	<div id="cooking" v-cloak>
+		<form class="form-inline common-query-cond-form" action="#">
+			<div class="form-group common-query-cond">
+				<label>所属菜系:</label> <select class="form-control-sm" v-model="styleOfCookingId">
+					<option value="">请选择</option>
+					<option v-for="dictItem in styleOfCookings" :value="dictItem.id">{{dictItem.styleOfCookingName}}</option>
+				</select>
+			</div>
+			<div class="form-group common-query-cond">
+				<label>菜名:</label><input type="text" class="form-control-sm" v-model="cookingName">
+			</div>
+			<button type="button" class="btn btn-danger btn-sm" v-on:click="refreshTable">搜索</button>
+		</form>
+		<form class="form-inline common-query-cond-form float-right" action="#">
+			<button type="button" class="btn btn-info btn-sm" v-on:click="openAddModal">新增菜系</button>
+		</form>
+		<table class="common-table"></table>
+
+		<div v-show="addOrUpdateFlag">
+			<div class="modal-mask">
+				<div class="modal-wrapper">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">{{actionTitle}}</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="addOrUpdateFlag = false">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="height: 460px; overflow: auto;">
+								<form>
+									<div class="form-group row">
+										<div class="col-sm-12">
+											<label>所属菜系:</label> <select class="form-control" v-model="editObj.styleOfCookingId">
+												<option value="">请选择</option>
+												<option v-for="dictItem in styleOfCookings" :value="dictItem.id">{{dictItem.styleOfCookingName}}</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
+										<div class="col-sm-6">
+											<label>菜名:</label> <input type="text" class="form-control" v-model="editObj.cookingName">
+										</div>
+										<div class="col-sm-6">
+											<label>价格:</label> <input type="number" class="form-control" v-model="editObj.price">
+										</div>
+									</div>
+									<div class="form-group row">
+										<div class="col-sm-12">
+											<label>简介:</label> 
+											<textarea rows="3" cols="" class="form-control" v-model="editObj.introduction"></textarea>
+										</div>
+									</div>
+									<div class="form-group row">
+										<div class="col-sm-12">
+											<label>参考图:</label> <input type="file" class="form-control pic">
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success btn-sm" v-on:click="addOrUpdate">保存</button>
+								<button type="button" class="btn btn-sm" v-on:click="addOrUpdateFlag = false">取消</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/js/admin/cooking.js"></script>
+</body>
+</html>

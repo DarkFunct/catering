@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>下单记录</title>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<link href="/css/common/common.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+.appeal-details-container {
+	padding-right: 44px;
+	padding-left: 44px;
+	padding-top: 15px;
+}
+
+.back-action {
+	float: right;
+}
+
+.appeal-details-row {
+	padding-bottom: 20px;
+}
+
+.appeal-details-title {
+	text-align: center;
+	font-weight: bold;
+	font-size: 22px;
+}
+
+.appeal-details-item {
+	font-size: 18px;
+}
+
+.appeal-details-item-highlight {
+	color: #ef061e;
+}
+
+.appeal-details-item label {
+	padding-right: 20px;
+	color: #757b82;
+}
+
+.appeal-details-item span {
+	
+}
+
+.appeal-details-action {
+	text-align: center;
+	padding-top: 10px;
+}
+
+.appeal-details-action button {
+	margin-right: 30px;
+}
+</style>
+</head>
+
+<body>
+	<div th:replace="admin/common/header::html"></div>
+	<div id="place-order-record" v-cloak>
+		<div v-show="showRecordFlag">
+			<form class="form-inline common-query-cond-form" action="#">
+				<div class="form-group common-query-cond">
+					<label>状态:</label> <select class="form-control-sm" v-model="state">
+						<option value="">请选择</option>
+						<option v-for="dictItem in stateDictItems" :value="dictItem.dictItemCode">{{dictItem.dictItemName}}</option>
+					</select>
+				</div>
+				<button type="button" class="btn btn-danger btn-sm" v-on:click="refreshTable">搜索</button>
+			</form>
+			<table class="common-table"></table>
+		</div>
+		<div class="appeal-details-container" v-show="showDetailsFlag">
+			<div class="back-action">
+				<button type="button" class="btn light btn-lg" v-on:click="showRecordPage">返回</button>
+			</div>
+			<div class="appeal-details-title">订单详情</div>
+			<div class="row appeal-details-row">
+				<div class="col-sm-4 appeal-details-item">
+					<label>订单号:</label><span>{{placeOrderRecord.orderNo}}</span>
+				</div>
+				<div class="col-sm-4 appeal-details-item">
+					<label>餐桌:</label><span>{{placeOrderRecord.diningTableName}}</span>
+				</div>
+				<div class="col-sm-4 appeal-details-item">
+					<label>订桌时间:</label><span>{{placeOrderRecord.bookTime}}</span>
+				</div>
+			</div>
+			<div class="row appeal-details-row">
+				<div class="col-sm-4 appeal-details-item">
+					<label>状态:</label><span class="appeal-details-item-highlight">{{placeOrderRecord.stateName}}</span>
+				</div>
+				<div class="col-sm-4 appeal-details-item" v-show="placeOrderRecord.state == '4'">
+					<label>结账时间:</label><span>{{placeOrderRecord.settleAccountTime}}</span>
+				</div>
+				<div class="col-sm-4 appeal-details-item" v-show="placeOrderRecord.state == '4'">
+					<label>消费:</label><span class="appeal-details-item-highlight">￥{{placeOrderRecord.consume}}</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header">
+							<span>点菜记录</span>
+						</div>
+						<div class="card-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>菜名</th>
+										<th>价格</th>
+										<th>状态</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="orderDishesRecord in orderDishesRecords">
+										<td>{{orderDishesRecord.cookingName}}</td>
+										<td class="appeal-details-item-highlight">￥{{orderDishesRecord.price}}</td>
+										<td style="color: #E8C97D;">{{orderDishesRecord.stateName}}</td>
+										<td><button type="button" class="btn btn-outline-success" v-show="orderDishesRecord.state == '1' && placeOrderRecord.state != '4'" v-on:click="updateOrderDishesRecordState(orderDishesRecord.id, '2')">已上菜</button></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="appeal-details-action">
+				<button type="button" class="btn btn-info btn-lg" v-show="placeOrderRecord.state == '2' || placeOrderRecord.state == '3'" v-on:click="settleAccount(placeOrderRecord.id)">结账</button>
+			</div>
+		</div>
+	</div>
+	<script src="/js/admin/place-order-record.js"></script>
+</body>
+</html>
