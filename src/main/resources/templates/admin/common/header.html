@@ -13,16 +13,17 @@
 	<div id="header" v-cloak>
 		<nav class="navbar navbar-expand-sm bg-info navbar-dark" style="justify-content: space-between;">
 			<ul class="navbar-nav">
-				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/dining-table'}" v-on:click="navTo('/admin/dining-table')"><a class="nav-link">餐桌管理</a></li>
-				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/style-of-cooking'}" v-on:click="navTo('/admin/style-of-cooking')"><a class="nav-link">菜系管理</a></li>
-				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/cooking'}" v-on:click="navTo('/admin/cooking')"><a class="nav-link">菜品维护</a></li>
-				<li class="nav-item" v-bind:class="{'active': currentPathName == '/admin/place-order-record'}" v-on:click="navTo('/admin/place-order-record')"><a class="nav-link">下单记录</a></li>
+				<li class="nav-item" v-show="accountType == 'admin'" v-bind:class="{'active': currentPathName == '/admin/dining-table'}" v-on:click="navTo('/admin/dining-table')"><a class="nav-link">餐桌管理</a></li>
+				<li class="nav-item" v-show="accountType == 'admin'" v-bind:class="{'active': currentPathName == '/admin/style-of-cooking'}" v-on:click="navTo('/admin/style-of-cooking')"><a class="nav-link">菜系管理</a></li>
+				<li class="nav-item" v-show="accountType == 'admin'" v-bind:class="{'active': currentPathName == '/admin/cooking'}" v-on:click="navTo('/admin/cooking')"><a class="nav-link">菜品维护</a></li>
+				<li class="nav-item" v-show="accountType == 'admin' || accountType == 'waiter'" v-bind:class="{'active': currentPathName == '/admin/place-order-record'}" v-on:click="navTo('/admin/place-order-record')"><a class="nav-link">下单记录</a></li>
+				<li class="nav-item" v-show="accountType == 'admin'" v-bind:class="{'active': currentPathName == '/admin/account-manage'}" v-on:click="navTo('/admin/account-manage')"><a class="nav-link">账号管理</a></li>
 			</ul>
 			<form class="form-inline" style="float: right;">
-				<span style="padding-right: 20px;">餐饮管理</span>
+				<span style="padding-right: 20px;">{{accountTypeName}}:{{userName}}</span>
+				<button type="button" class="btn btn-light btn-sm" v-on:click="logout">退出登录</button>
 			</form>
 		</nav>
-
 	</div>
 	<script type="text/javascript">
 		Vue.http.interceptors.push(function(request) {
@@ -40,15 +41,51 @@
 		var header = new Vue({
 			el : '#header',
 			data : {
+				accountType : '',
+				accountTypeName : '',
+				userName : '',
 				currentPathName : ''
 			},
 			computed : {},
 			created : function() {
 				this.currentPathName = window.location.pathname;
+				this.getUserAccountInfo();
 			},
 			methods : {
 				navTo : function(url) {
 					window.location.href = url;
+				},
+
+				/**
+				 * 获取用户账号信息
+				 */
+				getUserAccountInfo : function() {
+					var that = this;
+					that.$http.get('/userAccount/getUserAccountInfo').then(function(res) {
+						if (res.body.data == null) {
+							that.isLoggedInFlag = false;
+						} else {
+							that.accountType = res.body.data.accountType;
+							that.accountTypeName = res.body.data.accountTypeName;
+							that.userName = res.body.data.userName;
+						}
+					});
+				},
+
+				logout : function() {
+					this.$http.post('/logout').then(function(res) {
+						layer.open({
+							title : '提示',
+							icon : '1',
+							closeBtn : 0,
+							btn : [],
+							content : '退出成功!',
+							time : 2000,
+							end : function() {
+								window.location.href = '/admin/login';
+							}
+						});
+					});
 				}
 			}
 		});

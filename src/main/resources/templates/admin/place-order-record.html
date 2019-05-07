@@ -134,7 +134,7 @@
 				</div>
 			</div>
 			<div class="appeal-details-action">
-				<button type="button" class="btn btn-info btn-lg" v-show="placeOrderRecord.state == '2' || placeOrderRecord.state == '3'" v-on:click="settleAccount(placeOrderRecord.id)">结账</button>
+				<button type="button" class="btn btn-info btn-lg" v-show="(header.accountType == 'admin') && (placeOrderRecord.state == '2' || placeOrderRecord.state == '3')" v-on:click="settleAccount(placeOrderRecord.id)">结账</button>
 			</div>
 		</div>
 	</div>

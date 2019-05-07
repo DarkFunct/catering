@@ -10,6 +10,10 @@ package me.zohar.catering.common.exception;
 public enum BizError {
 
 	参数异常("1000", "参数异常"),
+	
+	用户名已存在("1000", "用户名已存在"),
+	
+	旧的登录密码不正确("1000", "旧的登录密码不正确"),
 
 	餐桌已被预订("1000", "餐桌已被预订"),
 
